@@ -1,0 +1,26 @@
+---
+general:
+  branches:
+    ignore:
+      - /release.*/
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    PROCESSING_URL: https://api-staging.finix.io
+dependencies:
+  pre:
+    # uncomment this after config GPG_KEY_PATH
+    #- gpg --yes --batch --import ${GPG_KEY_PATH}
+  override:
+    - mvn clean dependency:go-offline install -Dmaven.test.skip=true -Dgpg.skip --fail-never --threads 5 -B
+test:
+  override:
+    - echo "Dont have tests"
+
+deployment:
+  snapshot:
+    branch: master
+    owner: peoples-payments
+    commands:
+      - mvn deploy -DskipTests=true -Dgpg.skip -s settings.xml
